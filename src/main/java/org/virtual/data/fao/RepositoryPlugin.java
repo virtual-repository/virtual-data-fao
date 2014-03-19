@@ -1,14 +1,12 @@
 package org.virtual.data.fao;
 
-import static java.util.Collections.*;
-
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.inject.Inject;
 import javax.xml.namespace.QName;
 
 import org.virtual.data.fao.utils.Dependencies;
-import org.virtualrepository.Property;
 import org.virtualrepository.RepositoryService;
 import org.virtualrepository.spi.Lifecycle;
 import org.virtualrepository.spi.Plugin;
@@ -24,7 +22,7 @@ public class RepositoryPlugin implements Plugin, Lifecycle {
 	public static String about="a one paragraph summary of the repository";
 	
 	@Inject
-	RepositoryProxy proxy;
+	Databases finder;
 	
 	
 	@Override
@@ -37,16 +35,13 @@ public class RepositoryPlugin implements Plugin, Lifecycle {
 	@Override
 	public Collection<RepositoryService> services() {
 		
-		RepositoryService service = new RepositoryService(name,proxy,properties());
+		Collection<RepositoryService> services = new ArrayList<>();
 		
-		return singleton(service);
+		for (Database db : finder.find())
+			services.add(new RepositoryService(db.name(), new DatabaseProxy(db), db.properties()));
+		
+		return services;
 	}
 	
 	
-	private Property[] properties() {
-		
-		Property blurb = new Property("data.fao.org",about);
-		
-		return new Property[]{blurb};
-}
 }

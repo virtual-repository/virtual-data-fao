@@ -3,37 +3,29 @@ package org.virtual.data.fao;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.virtualrepository.spi.Browser;
 import org.virtualrepository.spi.Importer;
-import org.virtualrepository.spi.Lifecycle;
 import org.virtualrepository.spi.Publisher;
 import org.virtualrepository.spi.ServiceProxy;
 
 @Singleton
-public class RepositoryProxy implements ServiceProxy, Lifecycle {
+public class DatabaseProxy implements ServiceProxy {
 
-	@Inject
-	RepositoryBrowser browser;
-	
-	@Inject
-	RepositoryImporter importer;
+	private final DatabaseBrowser browser;
 	
 	private final List<Publisher<?,?>> publishers = new ArrayList<Publisher<?,?>>();
 	private final List<Importer<?,?>> importers = new ArrayList<Importer<?,?>>();
+
+	public DatabaseProxy(Database db) {
 	
-	@Override
-	public void init() throws Exception {
-	
-		// TODO Auto-generated method stub
-		//configure importers and publishers
-		importers.add(importer);
+		this.browser= new DatabaseBrowser(db);
+		
+		//TODO
+		importers.add(new DatabaseImporter(db));
+		
 	}
-	
-	@Inject
-	public RepositoryProxy() {}
 	
 	@Override
 	public Browser browser() {

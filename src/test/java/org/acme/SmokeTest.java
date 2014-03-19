@@ -2,7 +2,6 @@ package org.acme;
 
 import static org.acme.Utils.*;
 import static org.junit.Assert.*;
-import static org.virtual.data.fao.RepositoryPlugin.*;
 
 import javax.inject.Inject;
 
@@ -34,7 +33,7 @@ public class SmokeTest {
 		
 		VirtualRepository repo = new Repository();
 		
-		assertNotNull(repo.services().lookup(name));
+		assertNotNull(repo.services());
 		
 	}
 	
