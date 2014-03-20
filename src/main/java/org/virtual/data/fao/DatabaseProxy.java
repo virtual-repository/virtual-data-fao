@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.inject.Singleton;
 
+import org.virtual.data.fao.resources.Database;
 import org.virtualrepository.spi.Browser;
 import org.virtualrepository.spi.Importer;
 import org.virtualrepository.spi.Publisher;
