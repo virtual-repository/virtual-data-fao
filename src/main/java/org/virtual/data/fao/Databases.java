@@ -19,9 +19,11 @@ import org.virtual.data.fao.resources.Database;
 @Singleton
 public class Databases {
 
+	
 	private static final Logger log = LoggerFactory.getLogger(Databases.class);
 	
-	public static final Collection<String> dbCL = asList(
+	
+	private static final Collection<String> whitelist = asList(
 									"agro-maps",
 									"aquastat",
 									"crop-calendar",
@@ -34,13 +36,12 @@ public class Databases {
 									"hungermap");
 
 	
+	
 	@Inject
 	Provider<Request> requests;
 	
 	
 	public Collection<Database> find() {
-		
-		log.info("looking for databases...");
 		
 		long time = currentTimeMillis();
 		
@@ -50,22 +51,28 @@ public class Databases {
 			
 			int size = dbs.size();
 			
-			//prune off
-			Iterator<Database> it = dbs.iterator();
+			retainWhitelist(dbs);
 			
-			while (it.hasNext())
-				if (!dbCL.contains(it.next().mnemonic()))
-					it.remove();
-			
-			log.info("found {} databases in {} ms, retained {} from controlled lists",size,currentTimeMillis()-time,dbs.size());
-			
+			log.info("found {} FAO databases in {} ms, retained {} in whitelist",size,currentTimeMillis()-time,dbs.size());
 			
 			return dbs;
 
 		}
 		catch(Exception e) {
-			throw new RuntimeException("cannot discover databases (see cause)",e);
+			throw new RuntimeException("cannot discover FAO databases (see cause)",e);
 		}
 		
+	}
+	
+	
+	private void retainWhitelist(Collection<Database> dbs) {
+		
+		
+		//prune off as per whitelist
+		Iterator<Database> it = dbs.iterator();
+		
+		while (it.hasNext())
+			if (!whitelist.contains(it.next().mnemonic()))
+				it.remove();
 	}
 }

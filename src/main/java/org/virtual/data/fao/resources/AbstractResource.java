@@ -13,9 +13,8 @@ import org.virtualrepository.Property;
 
 public abstract class AbstractResource {
 
-
 	@XmlElement(name="label")
-	private List<Name> names;
+	private List<LocalisedValue> names;
 	
 	@XmlElement
 	private URI urn;
@@ -28,6 +27,10 @@ public abstract class AbstractResource {
 
 	@XmlElement
 	private String mnemonic;
+	
+	@XmlElement(name="description")
+	private List<LocalisedValue> descriptions;
+	
 	
 	List<Property> properties = new ArrayList<>();
 	
@@ -45,8 +48,14 @@ public abstract class AbstractResource {
 	
 	public abstract String name();
 	
-	public List<Name> allNames() {
+	
+	public List<LocalisedValue> names() {
 		return names;
+	}
+	
+	
+	public List<LocalisedValue> descriptions() {
+		return descriptions;
 	}
 	
 	public String mnemonic() {
@@ -68,13 +77,17 @@ public abstract class AbstractResource {
 	void afterUnmarshal(Unmarshaller u, Object parent) {
 
 		if (names!=null)
-			for (Name name : names)
-				properties.add(new Property(format("name(%s)",name.lang()), name.value()));
+			for (LocalisedValue name : names)
+				properties.add(new Property(format("name",name.lang()==null?"":"-"+name.lang()), name.value()));
 		
+		if (descriptions!=null)
+			for (LocalisedValue description : descriptions)
+				properties.add(new Property(format("description%s",description.lang()==null?"":"-"+description.lang()), description.value()));
 		
 		properties.add(new Property("uri",uri));
 		properties.add(new Property("urn",urn));
 		properties.add(new Property("uuid",uuid,false));
+		
 		
 	}
 }

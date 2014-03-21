@@ -20,6 +20,9 @@ public class Request {
 	private static final Logger log = LoggerFactory.getLogger(Request.class);
 	
 	private static final String baseURI = "http://data.fao.org/developers/api/v1/all/resources/";
+
+	
+	//note: we can push these on resource types if the need to diverge arises
 	
 	private static String showLanguage = "showLanguage";
 
@@ -28,7 +31,7 @@ public class Request {
 	private static int pageSizeDefault=100;
 
 	private static String fields="fields";
-	private static String fieldsDefault="mnemonic,uri,urn,uuid,label@en,label@fr,label@ru,label@zh,label@ar,label@es";
+	private static String fieldsDefault="mnemonic,description@*,properties.*,uri,urn,uuid,label@*";
 	
 	//move outside only if and when configuration becomes external
 	private static ClientConfig configuration = new ClientConfig()

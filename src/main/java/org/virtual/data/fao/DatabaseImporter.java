@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.virtual.data.fao.io.Request;
 import org.virtual.data.fao.resources.Database;
 import org.virtual.data.fao.resources.Member;
-import org.virtual.data.fao.resources.Name;
+import org.virtual.data.fao.resources.LocalisedValue;
 import org.virtualrepository.Property;
 import org.virtualrepository.csv.CsvCodelist;
 import org.virtualrepository.impl.Type;
@@ -40,6 +40,7 @@ public class DatabaseImporter implements Importer<CsvCodelist,Table> {
 	private static Column urncol = new Column("urn");
 	private static Column uricol = new Column("uri");
 	private static Column uuidcol = new Column("uuid");
+	private static Column bkcol = new Column("origin-id");
 
 	
 	public DatabaseImporter(Database db,Provider<Request> requests) {
@@ -98,21 +99,35 @@ public class DatabaseImporter implements Importer<CsvCodelist,Table> {
 			
 			Map<QName,String> data = new HashMap<>();
 			
-			for (Name name : member.allNames()) {
-				
-				if (name.lang().equals("en"))
-					data.put(codecol.name(),name.value());
-				
-				else {
+			if (member.names()!=null)
+				for (LocalisedValue name : member.names()) {
 					
-					Column col = new Column("name-"+name.lang());
-					if (!cols.contains(col))
-						cols.add(col);
-					data.put(col.name(),name.value());
+					if (name.lang().equals("en"))
+						data.put(codecol.name(),name.value());
 					
+					else {
+						
+						Column col = new Column("name"+(name.lang()==null?"":"-"+name.lang()));
+						if (!cols.contains(col))
+							cols.add(col);
+						data.put(col.name(),name.value());
+						
+					}
 				}
-			}
+				
+			if (member.descriptions()!=null)
+				for (LocalisedValue description : member.descriptions()) {
+					
+					Column col = new Column("description"+(description.lang()==null?"":"-"+description.lang()));
+						if (!cols.contains(col))
+							cols.add(col);
+						data.put(col.name(),description.value());
+						
+				}
 			
+			if (member.bk()!=null)
+				data.put(bkcol.name(),member.bk());
+
 			data.put(uricol.name(),member.uri().toString());
 			data.put(urncol.name(),member.urn().toString());
 			data.put(uuidcol.name(),member.uuid().toString());
