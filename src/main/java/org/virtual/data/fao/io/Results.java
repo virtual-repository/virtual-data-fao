@@ -14,14 +14,18 @@ import org.w3c.dom.Element;
 public class Results implements Iterable<Element> {
 
 	@XmlElement
-	Items list;
+	private Items list;
+	
+	public boolean hasMore() {
+		return list.total > (list.pageSize*list.page);
+	}
 	
 	@Override
 	public Iterator<Element> iterator() {
 		return list.item.iterator();
 	}
 	
-	public static class Items {
+	private static class Items {
 		
 		@XmlElement
 		int page;
@@ -50,6 +54,5 @@ public class Results implements Iterable<Element> {
 	public String toString() {
 		return "Results [list=" + list + "]";
 	}
-	
 	
 }

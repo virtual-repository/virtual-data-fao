@@ -3,8 +3,10 @@ package org.virtual.data.fao;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
+import org.virtual.data.fao.io.Request;
 import org.virtual.data.fao.resources.Database;
 import org.virtualrepository.spi.Browser;
 import org.virtualrepository.spi.Importer;
@@ -19,12 +21,11 @@ public class DatabaseProxy implements ServiceProxy {
 	private final List<Publisher<?,?>> publishers = new ArrayList<Publisher<?,?>>();
 	private final List<Importer<?,?>> importers = new ArrayList<Importer<?,?>>();
 
-	public DatabaseProxy(Database db) {
+	public DatabaseProxy(Database db, Provider<Request> requests)  {
 	
-		this.browser= new DatabaseBrowser(db);
+		this.browser= new DatabaseBrowser(db,requests);
 		
-		//TODO
-		importers.add(new DatabaseImporter(db));
+		importers.add(new DatabaseImporter(db,requests));
 		
 	}
 	
