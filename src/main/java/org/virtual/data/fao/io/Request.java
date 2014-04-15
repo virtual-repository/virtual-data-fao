@@ -31,7 +31,7 @@ public class Request {
 	private static int pageSizeDefault=100;
 
 	private static String fields="fields";
-	private static String fieldsDefault="mnemonic,description@*,properties.*,uri,urn,uuid,label@*";
+	private static String fieldsDefault="mnemonic,description@*,properties.bk,uri,urn,uuid,label@*";
 	
 	//move outside only if and when configuration becomes external
 	private static ClientConfig configuration = new ClientConfig()

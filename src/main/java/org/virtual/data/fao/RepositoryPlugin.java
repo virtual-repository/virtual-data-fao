@@ -45,7 +45,7 @@ public class RepositoryPlugin implements Plugin, Lifecycle {
 		
 		//one database, one repository
 		for (Database db : finder.find())
-			services.add(new RepositoryService(new QName("http://data.fao.org",db.name()), new DatabaseProxy(db,requests), db.properties()));
+			services.add(new RepositoryService(new QName(db.name()), new DatabaseProxy(db,requests), db.properties()));
 		
 		return services;
 	}
