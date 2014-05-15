@@ -1,5 +1,7 @@
 package org.virtual.data.fao;
 
+import static org.virtualrepository.spi.ImportAdapter.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,8 @@ import javax.inject.Singleton;
 
 import org.virtual.data.fao.io.Request;
 import org.virtual.data.fao.resources.Database;
+import org.virtualrepository.csv.CsvCodelist;
+import org.virtualrepository.csv.Table2CsvStream;
 import org.virtualrepository.spi.Browser;
 import org.virtualrepository.spi.Importer;
 import org.virtualrepository.spi.Publisher;
@@ -25,7 +29,11 @@ public class DatabaseProxy implements ServiceProxy {
 	
 		this.browser= new DatabaseBrowser(db,requests);
 		
-		importers.add(new DatabaseImporter(db,requests));
+		DatabaseImporter importer = new DatabaseImporter(db,requests);
+		
+		importers.add(importer);
+		
+		importers.add(adapt(importer, new Table2CsvStream<CsvCodelist>()));
 		
 	}
 	

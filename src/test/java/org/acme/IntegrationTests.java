@@ -3,6 +3,8 @@ package org.acme;
 import static java.lang.System.*;
 import static java.util.Arrays.*;
 
+import java.io.InputStream;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -11,6 +13,7 @@ import org.virtualrepository.Asset;
 import org.virtualrepository.RepositoryService;
 import org.virtualrepository.VirtualRepository;
 import org.virtualrepository.csv.CsvCodelist;
+import org.virtualrepository.csv.CsvTable;
 import org.virtualrepository.impl.Repository;
 import org.virtualrepository.tabular.Row;
 import org.virtualrepository.tabular.Table;
@@ -74,6 +77,22 @@ public class IntegrationTests {
 		Table table =repository.retrieve(codelist,Table.class);
 		
 		for (Row row : table)
+			System.out.println(row);
+	}
+	
+	@Test
+	public void retrieveCodelistAsStream() throws Exception {
+	
+		VirtualRepository repository = new Repository();
+		
+		repository.discover(CsvCodelist.type);
+		
+		//want bigger? try: urn:faodata:dimension:faostat:dataset:item
+		Asset codelist = repository.lookup("urn:faodata:dimension:agro-maps:crop");
+		
+		InputStream stream =repository.retrieve(codelist,InputStream.class);
+		
+		for (Row row : new CsvTable((CsvCodelist) codelist, stream))
 			System.out.println(row);
 	}
 }
